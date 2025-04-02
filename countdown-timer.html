@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#3498db">
+    <meta name="description" content="Countdown Timer Application with 1-hour and 5-minute phases">
+    <title>Countdown Timer</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f8ff;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .timer {
+            font-size: 5rem;
+            font-weight: bold;
+            margin: 2rem 0;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        .phase {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 1rem;
+        }
+        .controls {
+            margin-top: 2rem;
+        }
+        button {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 0.5rem;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Countdown Timer</h1>
+        <div class="phase" id="phase-indicator">Phase 1: 1 Hour Countdown</div>
+        <div class="timer" id="timer">01:00:00</div>
+        <div class="controls">
+            <button id="start-btn">Start</button>
+            <button id="reset-btn">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timerDisplay = document.getElementById('timer');
+            const phaseIndicator = document.getElementById('phase-indicator');
+            const startBtn = document.getElementById('start-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            
+            let timeRemaining = 60 * 60; // 1 hour in seconds
+            let timerInterval;
+            let isRunning = false;
+            let currentPhase = 1;
+            
+            function updateTimerDisplay() {
+                const hours = Math.floor(timeRemaining / 3600);
+                const minutes = Math.floor((timeRemaining % 3600) / 60);
+                const seconds = timeRemaining % 60;
+                
+                timerDisplay.textContent = 
+                    (hours < 10 ? '0' + hours : hours) + ':' +
+                    (minutes < 10 ? '0' + minutes : minutes) + ':' +
+                    (seconds < 10 ? '0' + seconds : seconds);
+            }
+            
+            function startTimer() {
+                if (isRunning) return;
+                
+                isRunning = true;
+                startBtn.disabled = true;
+                
+                timerInterval = setInterval(() => {
+                    if (timeRemaining > 0) {
+                        timeRemaining--;
+                        updateTimerDisplay();
+                    } else {
+                        // Timer reached zero
+                        if (currentPhase === 1) {
+                            // Switch to Phase 2 (5-minute timer)
+                            currentPhase = 2;
+                            phaseIndicator.textContent = 'Phase 2: 5 Minute Countdown';
+                            timeRemaining = 5 * 60; // 5 minutes in seconds
+                            updateTimerDisplay();
+                        } else {
+                            // Both phases complete
+                            clearInterval(timerInterval);
+                            phaseIndicator.textContent = 'Timer Complete!';
+                            startBtn.disabled = true;
+                            isRunning = false;
+                        }
+                    }
+                }, 1000);
+            }
+            
+            function resetTimer() {
+                clearInterval(timerInterval);
+                currentPhase = 1;
+                timeRemaining = 60 * 60; // Reset to 1 hour
+                phaseIndicator.textContent = 'Phase 1: 1 Hour Countdown';
+                updateTimerDisplay();
+                startBtn.disabled = false;
+                isRunning = false;
+            }
+            
+            startBtn.addEventListener('click', startTimer);
+            resetBtn.addEventListener('click', resetTimer);
+            
+            // Initialize the timer display
+            updateTimerDisplay();
+        });
+    </script>
+    <script>
+        // Register service worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

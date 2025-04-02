@@ -1,0 +1,24 @@
+{
+  "name": "Countdown Timer",
+  "short_name": "Timer",
+  "description": "A progressive web app with a 1-hour countdown followed by a 5-minute timer",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f0f8ff",
+  "theme_color": "#3498db",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}
