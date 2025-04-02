@@ -5,6 +5,7 @@ const urlsToCache = [
   './manifest.json',
   './icon-192x192.png',
   './icon-512x512.png',
+  './splash-screen.png',
   'https://cdnjs.cloudflare.com/ajax/libs/ion-sound/3.0.7/sounds/bell_ring.mp3'
 ];
 
